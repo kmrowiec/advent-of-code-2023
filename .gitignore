@@ -19,3 +19,6 @@
 
 # Go workspace file
 go.work
+
+# Input files - not meant to be shared
+input/
