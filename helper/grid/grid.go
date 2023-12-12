@@ -1,45 +1,28 @@
-package helper
+package grid
 
 import (
-	"bufio"
 	"fmt"
-	"log"
-	"os"
+	"math"
+
+	"dev.kmrowiec/aoc/helper"
 )
-
-type Solver interface {
-	PartOne() string
-	PartTwo() string
-}
-
-func ReadInputFile(path string) []string {
-	file, err := os.Open(path)
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer file.Close()
-
-	scanner := bufio.NewScanner(file)
-
-	result := make([]string, 0)
-
-	for scanner.Scan() {
-		result = append(result, scanner.Text())
-	}
-
-	if err := scanner.Err(); err != nil {
-		log.Fatal(err)
-	}
-
-	return result
-}
 
 type Point struct {
 	X, Y int
 }
 
+func PointFromXY(x, y int) Point {
+	return Point{X: x, Y: y}
+}
+
 type Grid struct {
 	Rows []string
+}
+
+func GridFromFile(inputFile string) Grid {
+	lines := helper.ReadInputFile(inputFile)
+	grid := Grid{Rows: lines}
+	return grid
 }
 
 func (grid *Grid) GetCharAt(point Point) rune {
@@ -71,18 +54,18 @@ func (grid *Grid) GerRow(y int) string {
 	return grid.Rows[y]
 }
 
-func (grid *Grid) Lentgh() int {
+func (grid *Grid) ColumnLength() int {
 	return len(grid.Rows)
 }
 
-func (grid *Grid) LentghX() int {
+func (grid *Grid) RowLength() int {
 	return len(grid.Rows[0])
 }
 
 func (grid *Grid) GetAdjacentPoints(point Point) []Point {
 	result := make([]Point, 0)
 	isValid := func(point Point) bool {
-		return point.X >= 0 && point.Y >= 0 && point.X < grid.LentghX() && point.Y < grid.Lentgh()
+		return point.X >= 0 && point.Y >= 0 && point.X < grid.RowLength() && point.Y < grid.ColumnLength()
 	}
 	potentialResult := []Point{
 		{point.X - 1, point.Y},
@@ -108,7 +91,7 @@ func (grid *Grid) GetAdjacents(point Point, diagonal bool) []Point {
 	} else {
 		result := make([]Point, 0)
 		isValid := func(point Point) bool {
-			return point.X >= 0 && point.Y >= 0 && point.X < grid.LentghX() && point.Y < grid.Lentgh()
+			return point.X >= 0 && point.Y >= 0 && point.X < grid.RowLength() && point.Y < grid.ColumnLength()
 		}
 		potentialResult := []Point{
 			{point.X - 1, point.Y},
@@ -125,16 +108,28 @@ func (grid *Grid) GetAdjacents(point Point, diagonal bool) []Point {
 	}
 }
 
+func (grid *Grid) InsertRow(rowNumber int, char rune) {
+
+	newRow := make([]rune, len(grid.Rows[0]))
+	for i := 0; i < len(grid.Rows[0]); i++ {
+		newRow[i] = char
+	}
+	grid.Rows = append(grid.Rows[:rowNumber+1], grid.Rows[rowNumber:]...)
+	grid.Rows[rowNumber] = string(newRow)
+}
+
+func (grid *Grid) InsertColumn(columnNumber int, char rune) {
+	for rowNumber := 0; rowNumber < grid.ColumnLength(); rowNumber++ {
+		grid.Rows[rowNumber] = grid.Rows[rowNumber][:columnNumber] + string(char) + grid.Rows[rowNumber][columnNumber:]
+	}
+}
+
+func (p1 *Point) DistanceTo(p2 Point) int {
+	return int(math.Abs(float64(p1.X)-float64(p2.X)) + math.Abs(float64(p1.Y)-float64(p2.Y)))
+}
+
 func (g *Grid) Draw() {
 	for _, line := range g.Rows {
 		fmt.Println(line)
 	}
-}
-
-func MinAndMax(a, b int) (min, max int) {
-	min, max = a, b
-	if a > b {
-		min, max = b, a
-	}
-	return
 }
