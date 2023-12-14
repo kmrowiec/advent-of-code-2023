@@ -6,6 +6,8 @@ import (
 	"dev.kmrowiec/aoc/day1"
 	"dev.kmrowiec/aoc/day10"
 	"dev.kmrowiec/aoc/day11"
+	"dev.kmrowiec/aoc/day12"
+	"dev.kmrowiec/aoc/day13"
 	"dev.kmrowiec/aoc/day2"
 	"dev.kmrowiec/aoc/day3"
 	"dev.kmrowiec/aoc/day4"
@@ -30,9 +32,11 @@ func main() {
 		9:  &day9.Solver{},
 		10: &day10.Solver{},
 		11: &day11.Solver{},
+		12: &day12.Solver{},
+		13: &day13.Solver{},
 	}
 
-	day := 11
+	day := 13
 	fmt.Printf("Day %d, Part 1: %v \n", day, solvers[day].PartOne())
 	fmt.Printf("Day %d, Part 2: %v \n", day, solvers[day].PartTwo())
 }

@@ -21,6 +21,10 @@ type Grid struct {
 
 func GridFromFile(inputFile string) Grid {
 	lines := helper.ReadInputFile(inputFile)
+	return GridFromLines(lines)
+}
+
+func GridFromLines(lines []string) Grid {
 	grid := Grid{Rows: lines}
 	return grid
 }
@@ -50,8 +54,16 @@ func (grid *Grid) FindLocation(content rune) Point {
 	return Point{}
 }
 
-func (grid *Grid) GerRow(y int) string {
+func (grid *Grid) GetRow(y int) string {
 	return grid.Rows[y]
+}
+
+func (grid *Grid) GetColumn(x int) string {
+	result := make([]rune, grid.ColumnLength())
+	for y := 0; y < grid.ColumnLength(); y++ {
+		result[y] = grid.GetCharAtXY(x, y)
+	}
+	return string(result)
 }
 
 func (grid *Grid) ColumnLength() int {
