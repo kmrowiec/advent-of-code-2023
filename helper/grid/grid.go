@@ -145,3 +145,7 @@ func (g *Grid) Draw() {
 		fmt.Println(line)
 	}
 }
+
+func (g *Grid) IsValid(point Point) bool {
+	return point.X >= 0 && point.Y >= 0 && point.X < g.RowLength() && point.Y < g.ColumnLength()
+}
